@@ -1,0 +1,241 @@
+<?php         
+    $this->loadLanguageFile('countries');
+    include(TL_ROOT . '/system/config/countries.php'); 	
+     
+    foreach( $this->info as $type => $data ):      
+      if ( $type == 'billing_address' ) 
+      { 
+          $billingAddress = $data;             
+      }                 
+      if ( $type == 'shipping_method' ) 
+      { 
+          $shippingMethod = $data;             
+      }             
+      if ( $type == 'payment_method' ) 
+      { 
+          $paymentMethod = $data;             
+      }             
+    endforeach; 
+    
+    $raw = deserialize($this->raw);
+      
+    $arrBillingAddress  = deserialize($raw['billing_address']);
+    $arrShippingAddress = deserialize($raw['shipping_address']);     
+
+    if ( !$arrShippingAddress ) 
+    { 
+       $arrShippingAddress = $arrBillingAddress;     
+    }     
+
+    list($title['name'], $title['id'], $title['date'], $title['time']) = explode(" ", $this->invoiceTitle ); 
+?>	 
+
+<div style="font-size: 72.5%; font-family: Helvetica, sans-serif; float:left;">
+	<table cellspacing="0" cellpadding="0" border="0" width="100%" style="margin-left:100px;" >
+	<tr>
+	  <td colspan="2" align="center"><?php echo $this->logoImage; ?><br><br></td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>		          
+  </tr> 
+  <tr>
+    <td width="67%"
+		><span style="font-size: 65%;text-decoration: underline;"><?php 
+			echo $this->config['company'] . " · " . 
+			     $this->config['firstname'] . " " . 
+			     $this->config['lastname'] . " · " .
+			     $this->config['street_1'] . " · " .
+			     $this->config['postal'] . " · " .
+			     $this->config['city'];
+	    ?></span><br><?php
+        echo $arrBillingAddress['company'] . '<br>' .
+             $arrBillingAddress['firstname'] . ' ' . 
+             $arrBillingAddress['lastname'] . '<br>' .
+             $arrBillingAddress['street_1'] . '<br>' .
+             $arrBillingAddress['postal'] . ' ' .
+             $arrBillingAddress['city'] . '<br><br>' .
+             $GLOBALS['TL_LANG']['CNT'][$arrBillingAddress['country']];    
+      ?><br><br><br><br><br
+      ><table width="100%" cellspacing="0" cellpadding="0" >  
+		<tr>				
+		  <td width="30%"><strong><?php echo $paymentMethod['headline']; ?>:</strong></td>					
+		  <td width="70%"><?php echo $paymentMethod['info']; ?></td>	
+		</tr>
+		<tr>				
+		  <td width="30%"><strong><?php echo $shippingMethod['headline']; ?>:</strong></td>					
+		  <td width="70%"><?php echo $shippingMethod['info']; ?></td>	
+		</tr>
+	  </table>
+	 </td>
+	<td width="3%" style="border-left: 1px solid #000;"></td>
+    <td width="40%"><span style="font-size: 100%;font-weight: bold;"
+	  ><?php echo $title['name']; ?></span><br><br
+      >Kundennummer: <?php echo $this->pid > 0 ? $this->pid : "-"; ?><br
+      >Bestelldatum: <?php  echo $this->date; ?><br
+      >Rechnungsnummer: <?php echo $title['id']; ?><br
+      >Datum: <?php echo $this->parseDate($GLOBALS['TL_CONFIG']['dateFormat'], strtotime("now")); ?>
+    </td>
+  </tr> 
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>		          
+  </tr>  
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>		          
+  </tr> 
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>		          
+  </tr> 
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>		          
+  </tr>
+	</table>
+	
+  <table width="100%" cellspacing="0" cellpadding="0">
+    <tr>
+      <td width="15%" ><strong>Position</strong></td>
+      <td width="50%" ><strong>Artikel</strong></td>
+      <td width="10%" align="right"><strong>Menge</strong></td>
+      <td width="15%" align="right"><strong>Einzelpreis</strong></td>
+      <td width="10%" align="right"><strong>Preis</strong></td>			          
+    </tr>   
+    <tr>
+      <td style="border-top: 0.5px solid #000;">&nbsp;</td>
+      <td style="border-top: 0.5px solid #000;">&nbsp;</td>
+      <td style="border-top: 0.5px solid #000;">&nbsp;</td>
+      <td style="border-top: 0.5px solid #000;">&nbsp;</td>
+      <td style="border-top: 0.5px solid #000;">&nbsp;</td>
+    </tr>
+    <?php 
+      $countItems = count($this->items); 
+      $count      = 1;
+      foreach( $this->items as $product ): 
+    ?>
+		<tr>
+		  <td width="15%"><?php echo sprintf("%'03d",$count); ?></td>	  
+		  <td width="50%"><?php echo $product['name']; ?></td>	
+		  <td width="10%" align="right"><?php echo $product['quantity']; ?></td>
+		  <td width="15%" align="right"><?php echo $product['price']; ?></td>
+		  <td width="10%" align="right"><?php echo $product['total']; ?></td>
+		</tr>
+		<?php if($product['product_options']): foreach($product['product_options'] as $option): ?>	
+		<tr>		
+		  <td width="15%">&nbsp;</td>	  
+		  <td width="50%"><?php echo $option['label'] . ': ' . $option['value']; ?></td>	
+		  <td width="10%">&nbsp;</td>
+		  <td width="15%">&nbsp;</td>
+		  <td width="10%">&nbsp;</td>	
+		</tr><?php endforeach; endif; ?>    
+		<tr>
+		  <td width="15%">&nbsp;</td>	  
+		  <td width="50%"><strong>Artikelnummer: <?php echo $product['raw']['sku']; ?></strong></td>	
+		  <td width="10%">&nbsp;</td>
+		  <td width="15%">&nbsp;</td>
+		  <td width="10%">&nbsp;</td>
+		</tr>    
+		<?php if ($count < $countItems): ?>
+			<tr>
+			  <td width="15%">&nbsp;</td>	  
+			  <td width="50%">&nbsp;</td>	
+			  <td width="10%">&nbsp;</td>
+			  <td width="15%">&nbsp;</td>
+			  <td width="10%">&nbsp;</td>
+			</tr>		
+		<?php endif; ?>
+    <?php 
+      $count++; 
+      endforeach; 
+    ?> 
+    <tr>
+      <td style="border-bottom: 0.5px solid #000;">&nbsp;</td>
+      <td style="border-bottom: 0.5px solid #000;">&nbsp;</td>
+      <td style="border-bottom: 0.5px solid #000;">&nbsp;</td>
+      <td style="border-bottom: 0.5px solid #000;">&nbsp;</td>
+      <td style="border-bottom: 0.5px solid #000;">&nbsp;</td>
+    </tr> 
+    <tr>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>			          
+    </tr>
+    <tr>		
+      <td colspan="4" align="left"><?php echo $this->subTotalLabel; ?>:</td>	
+      <td align="right"><?php echo $this->subTotalPrice; ?></td>	
+    </tr>	             
+    <?php if (is_array($this->surcharges)): foreach( $this->surcharges as $surcharge ): ?>	 
+    <tr>		
+      <td colspan="4" align="left"><?php 
+        echo $surcharge['label']; ?> [<?php echo $surcharge['price']; ?>]:</td>         			
+      <td align="right"><?php echo $surcharge['total_price']; ?></td>	
+    </tr>
+    <?php endforeach; endif; ?>	
+    <tr>
+      <td style="border-bottom: 0.5px solid #000;">&nbsp;</td>
+      <td style="border-bottom: 0.5px solid #000;">&nbsp;</td>
+      <td style="border-bottom: 0.5px solid #000;">&nbsp;</td>
+      <td style="border-bottom: 0.5px solid #000;">&nbsp;</td>
+      <td style="border-bottom: 0.5px solid #000;">&nbsp;</td>
+    </tr>  
+    <tr>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>			          
+    </tr>      
+    <tr> 		
+      <td colspan="4" align="left"><strong><?php echo $this->grandTotalLabel; ?>:</strong></td>	          		
+      <td align="right"><strong><?php echo $this->grandTotal; ?></strong></td>	
+    </tr> 
+  </table>
+  <br><br><br>
+  <table width="100%" cellspacing="0" cellpadding="0">  
+    <tr>				
+      <td width="80%"><?php echo $this->notes; ?></td>					
+      <td width="20%" style="color:#a3a3a3;" align="right">LIEFERADRESSE<br><?php 
+	    echo $arrShippingAddress['company'] . '<br>'.	
+             $arrShippingAddress['firstname'] . ' ' . 
+             $arrShippingAddress['lastname'] . '<br>' .
+             $arrShippingAddress['street_1'] . '<br>' .
+             $arrShippingAddress['postal'] . ' ' .
+             $arrShippingAddress['city'] . '<br>' .
+             $GLOBALS['TL_LANG']['CNT'][$arrShippingAddress['country']];     
+      ?></td>	
+    </tr> 
+  </table>
+</div>
+<div style="background-color:#dcdcdc; width: 100%; padding: 20px 80px; font-size: 72.5%; font-family: Helvetica, sans-serif;"><table 
+   width="100%" cellspacing="0" cellpadding="0">  
+    <tr><td colspan="4"></td></tr>
+    <tr>	
+      <td width="10%"></td>				
+      <td width="40%"><strong
+        ><?php echo $this->config['company']; ?></strong><br
+	    ><?php echo $this->config['firstname'] . " " . $this->config['lastname']; ?><br
+        ><?php echo $this->config['street_1']; ?><br
+        ><?php echo $this->config['postal'] . " " . $this->config['city']; ?><br
+        ><?php echo $GLOBALS['TL_LANG']['CNT'][$this->config['country']]; ?><br><br
+	    >phone <?php echo $this->config['phone']; ?><br
+	    ><?php echo $this->config['email']; ?><br
+        ><?php echo $_SERVER["SERVER_NAME"]; ?>
+      </td>					
+      <td width="10%"></td>	
+      <td width="40%">Bank<br
+	    >Sparkasse<br
+	    >Konto 123456789<br
+	    >BLZ 10000000<br
+	    >IBAN: DE123456789000000<br
+	    >BIC-/SWIFT-Code: ABCDEFGHIJ<br><br
+	    >Umsatz-Steuer-ID: 123456789</td>
+    </tr> 
+  </table>	
+</div>
+<pre>
+<?php #$this->showTemplateVars(); ?>
+</pre>

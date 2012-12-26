@@ -1,0 +1,224 @@
+<?php         
+    $this->loadLanguageFile('countries');
+    include(TL_ROOT . '/system/config/countries.php'); 	
+     
+    foreach( $this->info as $type => $data ):      
+      if ( $type == 'billing_address' ) 
+      { 
+          $billingAddress = $data;             
+      }                 
+      if ( $type == 'shipping_method' ) 
+      { 
+          $shippingMethod = $data;             
+      }             
+      if ( $type == 'payment_method' ) 
+      { 
+          $paymentMethod = $data;             
+      }             
+    endforeach; 
+    
+    $raw = deserialize($this->raw);
+      
+    $arrBillingAddress  = deserialize($raw['billing_address']);
+    $arrShippingAddress = deserialize($raw['shipping_address']);     
+
+    if ( !$arrShippingAddress ) 
+    { 
+       $arrShippingAddress = $arrBillingAddress;     
+    }     
+
+    list($title['name'], $title['id'], $title['date'], $title['time']) = explode(" ", $this->invoiceTitle ); 
+?>	 
+
+<div style="font-size: 72.5%; font-family: Helvetica, sans-serif; float:left;">
+	<table cellspacing="0" cellpadding="0" border="0" width="100%" style="margin-left:100px;" >
+	<tr>
+	  <td colspan="2" align="center"><?php echo $this->logoImage; ?><br><br></td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>		          
+  </tr> 
+  <tr>
+    <td width="60%"
+		><span style="font-size: 65%;text-decoration: underline;"><?php 
+			echo $this->config['company'] . " · " . 
+			     $this->config['firstname'] . " " . 
+			     $this->config['lastname'] . " · " .
+			     $this->config['street_1'] . " · " .
+			     $this->config['postal'] . " · " .
+			     $this->config['city'];
+	    ?></span><br><?php
+        echo $arrBillingAddress['company'] . '<br>' .
+             $arrBillingAddress['firstname'] . ' ' . 
+             $arrBillingAddress['lastname'] . '<br>' .
+             $arrBillingAddress['street_1'] . '<br>' .
+             $arrBillingAddress['postal'] . ' ' .
+             $arrBillingAddress['city'] . '<br><br>' .
+             $GLOBALS['TL_LANG']['CNT'][$arrBillingAddress['country']];    
+      ?><br><br><br><br><br><br    
+      ><span style="font-size: 100%;font-weight: bold;"><?php echo $title['name']; ?></span><br><br
+      >Kundennummer: <?php echo $this->pid > 0 ? $this->pid : "-"; ?><br
+      >Bestelldatum: <?php  echo $this->date; ?><br
+      >Rechnungsnummer: <?php echo $title['id']; ?><br
+      >Datum: <?php echo $this->parseDate($GLOBALS['TL_CONFIG']['dateFormat'], strtotime("now")); ?>
+	 </td>
+    <td width="40%"
+    	><strong><?php echo $this->config['company']; ?></strong><br
+	    ><?php echo $this->config['firstname'] . " " . $this->config['lastname']; ?><br
+        ><?php echo $this->config['street_1']; ?><br
+        ><?php echo $this->config['postal'] . " " . $this->config['city']; ?><br
+        ><?php echo $GLOBALS['TL_LANG']['CNT'][$this->config['country']]; ?><br><br
+	    >phone <?php echo $this->config['phone']; ?><br
+	    ><?php echo $this->config['email']; ?><br
+        ><?php echo $_SERVER["SERVER_NAME"]; ?><br><br
+	    >Bank<br
+	    >Sparkasse<br
+	    >Konto 123456789<br
+	    >BLZ 10000000<br
+	    >IBAN: DE123456789000000<br
+	    >BIC-/SWIFT-Code: ABCDEFGHIJ<br><br
+	    >Umsatz-Steuer-ID: 123456789
+    </td>
+  </tr> 
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>		          
+  </tr>  
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>		          
+  </tr> 
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>		          
+  </tr> 
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>		          
+  </tr>
+	</table>
+	
+  <table width="100%" cellspacing="0" cellpadding="0">
+    <tr>
+      <td width="15%" ><strong>Artikel-Nr.</strong></td>
+      <td width="50%" ><strong>Artikel</strong></td>
+      <td width="10%" ><strong>Menge</strong></td>
+      <td width="15%" ><strong>Einzelpreis</strong></td>
+      <td width="10%" ><strong>Preis</strong></td>			          
+    </tr>   
+    <tr>
+      <td style="border-top: 0.5px solid #000;">&nbsp;</td>
+      <td style="border-top: 0.5px solid #000;">&nbsp;</td>
+      <td style="border-top: 0.5px solid #000;">&nbsp;</td>
+      <td style="border-top: 0.5px solid #000;">&nbsp;</td>
+      <td style="border-top: 0.5px solid #000;">&nbsp;</td>
+    </tr>
+    <?php foreach( $this->items as $product ): ?>
+    <tr>
+      <td width="15%"><?php echo $product['raw']['sku']; ?></td>	  
+      <td width="50%"><?php echo $product['name']; ?><br><?php echo $product['raw']['teaser']; ?></td>	
+  		<td width="10%" align="center"><?php echo $product['quantity']; ?></td>
+      <td width="15%"><?php echo $product['price']; ?></td>
+      <td width="10%" align="right"><?php echo $product['total']; ?></td>
+    </tr>
+    <?php endforeach; ?> 
+    <tr>
+      <td style="border-bottom: 0.5px solid #000;">&nbsp;</td>
+      <td style="border-bottom: 0.5px solid #000;">&nbsp;</td>
+      <td style="border-bottom: 0.5px solid #000;">&nbsp;</td>
+      <td style="border-bottom: 0.5px solid #000;">&nbsp;</td>
+      <td style="border-bottom: 0.5px solid #000;">&nbsp;</td>
+    </tr> 
+    <tr>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>			          
+    </tr>
+    <tr>		
+      <td colspan="4" align="right"><?php echo $this->subTotalLabel; ?>:</td>	
+      <td align="right"><?php echo $this->subTotalPrice; ?></td>	
+    </tr>	             
+    <?php if (is_array($this->surcharges)): foreach( $this->surcharges as $surcharge ): ?>	 
+    <tr>		
+      <td colspan="4" align="right"><?php 
+        echo $surcharge['label']; ?> [<?php echo $surcharge['price']; ?>]:</td>         			
+      <td align="right"><?php echo $surcharge['total_price']; ?></td>	
+    </tr>
+    <?php endforeach; endif; ?>	
+    <tr>
+      <td style="border-bottom: 0.5px solid #000;">&nbsp;</td>
+      <td style="border-bottom: 0.5px solid #000;">&nbsp;</td>
+      <td style="border-bottom: 0.5px solid #000;">&nbsp;</td>
+      <td style="border-bottom: 0.5px solid #000;">&nbsp;</td>
+      <td style="border-bottom: 0.5px solid #000;">&nbsp;</td>
+    </tr>  
+    <tr>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>			          
+    </tr>      
+    <tr> 		
+      <td colspan="4" align="right"><strong><?php echo $this->grandTotalLabel; ?>:</strong></td>	          		
+      <td align="right"><strong><?php echo $this->grandTotal; ?></strong></td>	
+    </tr>  
+    <tr>
+      <td style="border-bottom: 0.5px solid #000;">&nbsp;</td>
+      <td style="border-bottom: 0.5px solid #000;">&nbsp;</td>
+      <td style="border-bottom: 0.5px solid #000;">&nbsp;</td>
+      <td style="border-bottom: 0.5px solid #000;">&nbsp;</td>
+      <td style="border-bottom: 0.5px solid #000;">&nbsp;</td>
+    </tr> 
+  </table>
+  <br>
+  <table width="100%" cellspacing="0" cellpadding="0" >  
+    <tr>				
+      <td width="20%"><strong><?php echo $paymentMethod['headline']; ?>:</strong></td>					
+      <td width="80%"><?php echo $paymentMethod['info']; ?></td>	
+    </tr>
+    <tr>				
+      <td width="20%"><strong><?php echo $shippingMethod['headline']; ?>:</strong></td>					
+      <td width="80%"><?php echo $shippingMethod['info']; ?></td>	
+    </tr>
+  </table>          
+  <br><br><br>
+  <table width="100%" cellspacing="0" cellpadding="0">  
+    <tr>
+      <td colspan="2"><strong>Rechnungshinweise</strong></td>	          
+    </tr>   
+    <tr>
+      <td style="border-top: 0.5px solid #000;">&nbsp;</td>
+      <td style="border-top: 0.5px solid #000;">&nbsp;</td>
+    </tr>
+    <tr>				
+      <td width="20%">Versandadresse</td>					
+      <td width="80%"><?php
+        // nur wenn eine Adresse eingeben ist.
+        if ( strlen ($arrShippingAddress['company']) > 0 )
+        {
+			echo $arrShippingAddress['company'] . ', ';
+		}	
+        echo $arrShippingAddress['firstname'] . ' ' . 
+             $arrShippingAddress['lastname'] . ', ' .
+             $arrShippingAddress['street_1'] . ', ' .
+             $arrShippingAddress['postal'] . ', ' .
+             $arrShippingAddress['city'] . ', ' .
+             $GLOBALS['TL_LANG']['CNT'][$arrShippingAddress['country']];     
+      ?></td>	
+    </tr> 
+    <?php if ($this->notes): ?>   
+    <tr>	
+      <td width="20%">Notiz</td>			
+      <td width="80%"><?php echo $this->notes; ?></td>		
+    </tr>
+    <?php endif; ?>
+  </table>
+</div>
+
+<pre>
+<?php #$this->showTemplateVars(); ?>
+</pre>
