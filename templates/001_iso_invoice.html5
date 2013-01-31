@@ -2,11 +2,7 @@
     $this->loadLanguageFile('countries');
     include(TL_ROOT . '/system/config/countries.php'); 	
      
-    foreach( $this->info as $type => $data ):      
-      if ( $type == 'billing_address' ) 
-      { 
-          $billingAddress = $data;             
-      }                 
+    foreach( $this->info as $type => $data ):                       
       if ( $type == 'shipping_method' ) 
       { 
           $shippingMethod = $data;             
@@ -26,8 +22,6 @@
     { 
        $arrShippingAddress = $arrBillingAddress;     
     }     
-
-    list($title['name'], $title['id'], $title['date'], $title['time']) = explode(" ", $this->invoiceTitle ); 
 ?>	 
 
 <div style="font-size: 72.5%; font-family: Helvetica, sans-serif; float:left;">
@@ -57,11 +51,11 @@
              $arrBillingAddress['city'] . '<br><br>' .
              $GLOBALS['TL_LANG']['CNT'][$arrBillingAddress['country']];    
       ?><br><br><br><br><br><br    
-      ><span style="font-size: 100%;font-weight: bold;"><?php echo $title['name']; ?></span><br><br
+      ><span style="font-size: 100%;font-weight: bold;"><?php echo $this->invoiceTitle; ?></span><br><br
       >Kundennummer: <?php echo $this->pid > 0 ? $this->pid : "-"; ?><br
-      >Bestelldatum: <?php  echo $this->date; ?><br
-      >Rechnungsnummer: <?php echo $title['id']; ?><br
-      >Datum: <?php echo $this->parseDate($GLOBALS['TL_CONFIG']['dateFormat'], strtotime("now")); ?>
+      ><?php echo $this->orderDateLabel . ": " . $this->orderDate; ?><br
+      ><?php echo $this->orderIdLabel . ": " . $this->orderId; ?><br
+      >Datum: <?php echo $this->orderDate; ?>
 	 </td>
     <td width="40%"
     	><strong><?php echo $this->config['company']; ?></strong><br
@@ -71,14 +65,17 @@
         ><?php echo $GLOBALS['TL_LANG']['CNT'][$this->config['country']]; ?><br><br
 	    >phone <?php echo $this->config['phone']; ?><br
 	    ><?php echo $this->config['email']; ?><br
-        ><?php echo $_SERVER["SERVER_NAME"]; ?><br><br
-	    >Bank<br
-	    >Sparkasse<br
-	    >Konto 123456789<br
-	    >BLZ 10000000<br
-	    >IBAN: DE123456789000000<br
-	    >BIC-/SWIFT-Code: ABCDEFGHIJ<br><br
-	    >Umsatz-Steuer-ID: 123456789
+        ><?php echo $_SERVER["SERVER_NAME"]; ?><br><?php 
+			if(strlen($this->bankName) > 0): ?><br
+				><?php echo $this->bankNameLabel; ?><br
+				><?php echo $this->bankName; ?><br
+				><?php echo $this->bankIdLabel . ": " . $this->bankId; ?><br
+				><?php echo $this->accountNumberLabel . ": " . $this->accountNumber; ?><br
+				><?php echo $this->ibanLabel . ": " . $this->iban; ?><br
+				><?php echo $this->bicLabel . ": " . $this->bic; 
+			endif; ?><br><br
+	    ><?php if(strlen($this->taxNumber) > 0): echo $this->taxNumberLabel . ": " . $this->taxNumber; endif; ?><br
+	    ><?php if(strlen($this->vatNo) > 0): echo $this->vatNoLabel . ": " . $this->vatNo; endif; ?>
     </td>
   </tr> 
   <tr>
@@ -218,7 +215,3 @@
     <?php endif; ?>
   </table>
 </div>
-
-<pre>
-<?php #$this->showTemplateVars(); ?>
-</pre>
