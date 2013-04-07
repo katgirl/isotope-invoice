@@ -20,8 +20,6 @@ CREATE TABLE `tl_iso_config` (
   `tax_number` varchar(255) NOT NULL default '',
   `register` varchar(255) NOT NULL default '',
   `managing_directors` varchar(255) NOT NULL default '',
+  `invoice_template` varchar(255) NOT NULL default '',
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-
--- --------------------------------------------------------
 

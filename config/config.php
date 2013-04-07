@@ -2,7 +2,7 @@
 
 /**
  * Contao Open Source CMS
- * Copyright (C) 2005-2010 Leo Feyer
+ * Copyright (C) 2005-2013 Leo Feyer
  *
  * Formerly known as TYPOlight Open Source CMS.
  *
@@ -21,18 +21,10 @@
  * Software Foundation website at <http://www.gnu.org/licenses/>.
  *
  * PHP version 5
- * @copyright  KAT-Webdesign (2013)
- * @author     Kirsten Roschanski
+ * @copyright  Copyright (C) 2013 Kirsten Roschanski
+ * @author     Kirsten Roschanski <kat@kirsten-roschanski.de>
  * @license    http://opensource.org/licenses/lgpl-3.0.html
  */
-
-/**
- * BACKEND MODULES
- */ 
- 
- /**
- * FRONDEND MODULES
- */ 
 
 /**
  * Hooks
