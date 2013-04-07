@@ -1,0 +1,229 @@
+<?php if (!defined('TL_ROOT')) die('You can not access this file directly!');
+
+/**
+ * Contao Open Source CMS
+ * Copyright (C) 2005-2013 Leo Feyer
+ *
+ * Formerly known as TYPOlight Open Source CMS.
+ *
+ * This program is free software: you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation, either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program. If not, please visit the Free
+ * Software Foundation website at <http://www.gnu.org/licenses/>.
+ *
+ * PHP version 5
+ * @copyright  Copyright (C) 2013 Kirsten Roschanski
+ * @author     Kirsten Roschanski <kat@kirsten-roschanski.de>
+ * @license    http://opensource.org/licenses/lgpl-3.0.html
+ */
+
+    $this->loadLanguageFile('countries');
+    $this->loadLanguageFile('tl_iso_config');
+    include(TL_ROOT . '/system/config/countries.php');      
+?> 	 
+
+<div style="font-size: 72.5%; font-family: Helvetica, sans-serif; float:left;">
+	<table cellspacing="0" cellpadding="0" border="0" width="100%" style="margin-left:100px;" >
+	<tr>
+	  <td colspan="2" align="center"><?php echo $this->logoImage; ?><br><br></td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>		          
+  </tr> 
+  <tr>
+    <td width="67%"
+		><span style="font-size: 65%;text-decoration: underline;"><?php 
+        echo $this->config['company'] ? $this->config['company'] . " · " : ""; 
+        echo $this->config['firstname'] . " ";
+        echo $this->config['lastname'] . " · ";
+        echo $this->config['street_1'] ? $this->config['street_1'] . " · " : "";
+        echo $this->config['street_2'] ? $this->config['street_2'] . " · " : "";
+        echo $this->config['street_3'] ? $this->config['street_3'] . " · " : "";
+        echo $this->config['postal'] . " · ";
+        echo $this->config['city'];
+        echo "</span><br><br>";
+        echo $this->arrBillingAddress['company'] ? $this->arrBillingAddress['company'] . "<br>" : "";
+        echo $this->arrBillingAddress['firstname'] . " "; 
+        echo $this->arrBillingAddress['lastname'] . "<br>";
+        echo $this->arrBillingAddress['street_1'] ? $this->arrBillingAddress['street_1'] . "<br>" : "";
+        echo $this->arrBillingAddress['street_2'] ? $this->arrBillingAddress['street_2'] . "<br>" : "";
+        echo $this->arrBillingAddress['street_3'] ? $this->arrBillingAddress['street_3'] . "<br>" : "";
+        echo $this->arrBillingAddress['postal'] . " ";
+        echo $this->arrBillingAddress['city'] . "<br><br>";
+        echo $GLOBALS['TL_LANG']['CNT'][$this->arrBillingAddress['country']];   
+      ?><br><br><br><br><br
+      ><table width="100%" cellspacing="0" cellpadding="0" >  
+      <tr>        
+        <td width="20%"><strong><?php echo $this->info['payment_method']['headline']; ?>:</strong></td>          
+        <td width="80%"><?php echo $this->info['payment_method']['info']; ?></td>  
+      </tr>
+      <tr>        
+        <td width="20%"><strong><?php echo $this->info['shipping_method']['headline']; ?>:</strong></td>          
+        <td width="80%"><?php echo $this->info['shipping_method']['info']; ?></td>  
+      </tr>
+	  </table>
+	 </td>
+	<td width="3%" style="border-left: 1px solid #000;"></td>
+    <td width="40%"><span style="font-size: 100%;font-weight: bold;"><?php
+        echo $this->invoiceTitle . "</span><br><br>";
+        echo $GLOBALS['TL_LANG']['isoInvoice']['customerID'] . ": "; 
+        echo $this->pid > 0 ? $this->pid . "<br>" : "-<br>";
+        echo $this->orderDateLabel . ": " . $this->orderDate . "<br>";
+        echo $this->orderIdLabel . ": " . $this->orderId . "<br>";
+        echo $GLOBALS['TL_LANG']['isoInvoice']['date'] . ": " . $this->orderDate . "<br>"; 
+    ?></td>
+  </tr> 
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>		          
+  </tr>  
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>		          
+  </tr> 
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>		          
+  </tr> 
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>		          
+  </tr>
+	</table>
+	
+  <table width="100%" cellspacing="0" cellpadding="0">
+    <tr>
+      <td width="15%" ><strong><?php echo $GLOBALS['TL_LANG']['isoInvoice']['sku']; ?></strong></td>
+      <td width="50%" ><strong><?php echo $GLOBALS['TL_LANG']['isoInvoice']['item']; ?></strong></td>
+      <td width="10%" ><strong><?php echo $GLOBALS['TL_LANG']['isoInvoice']['quantity']; ?></strong></td>
+      <td width="15%" ><strong><?php echo $GLOBALS['TL_LANG']['isoInvoice']['unitPrice']; ?></strong></td>
+      <td width="10%" ><strong><?php echo $GLOBALS['TL_LANG']['isoInvoice']['price']; ?></strong></td>                
+    </tr>   
+    <tr>
+      <td style="border-top: 0.5px solid #000;">&nbsp;</td>
+      <td style="border-top: 0.5px solid #000;">&nbsp;</td>
+      <td style="border-top: 0.5px solid #000;">&nbsp;</td>
+      <td style="border-top: 0.5px solid #000;">&nbsp;</td>
+      <td style="border-top: 0.5px solid #000;">&nbsp;</td>
+    </tr>
+    <?php foreach( $this->items as $product ): ?>
+    <tr>
+      <td width="15%"><?php echo $product['raw']['sku']; ?></td>    
+      <td width="50%"><?php echo $product['name']; ?><br><?php echo $product['raw']['teaser']; ?></td>  
+      <td width="10%" align="center"><?php echo $product['quantity']; ?></td>
+      <td width="15%"><?php echo $product['price']; ?></td>
+      <td width="10%" align="right"><?php echo $product['total']; ?></td>
+    </tr>
+    <?php endforeach; ?> 
+    <tr>
+      <td style="border-bottom: 0.5px solid #000;">&nbsp;</td>
+      <td style="border-bottom: 0.5px solid #000;">&nbsp;</td>
+      <td style="border-bottom: 0.5px solid #000;">&nbsp;</td>
+      <td style="border-bottom: 0.5px solid #000;">&nbsp;</td>
+      <td style="border-bottom: 0.5px solid #000;">&nbsp;</td>
+    </tr> 
+    <tr>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>                
+    </tr>
+    <tr>    
+      <td colspan="4" align="right"><?php echo $this->subTotalLabel; ?>:</td>  
+      <td align="right"><?php echo $this->subTotalPrice; ?></td>  
+    </tr>               
+    <?php if (is_array($this->surcharges)): foreach( $this->surcharges as $surcharge ): ?>   
+    <tr>    
+      <td colspan="4" align="right"><?php 
+        echo $surcharge['label']; ?> [<?php echo $surcharge['price']; ?>]:</td>               
+      <td align="right"><?php echo $surcharge['total_price']; ?></td>  
+    </tr>
+    <?php endforeach; endif; ?>  
+    <tr>
+      <td style="border-bottom: 0.5px solid #000;">&nbsp;</td>
+      <td style="border-bottom: 0.5px solid #000;">&nbsp;</td>
+      <td style="border-bottom: 0.5px solid #000;">&nbsp;</td>
+      <td style="border-bottom: 0.5px solid #000;">&nbsp;</td>
+      <td style="border-bottom: 0.5px solid #000;">&nbsp;</td>
+    </tr>  
+    <tr>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>                
+    </tr>      
+    <tr>     
+      <td colspan="4" align="right"><strong><?php echo $this->grandTotalLabel; ?>:</strong></td>                
+      <td align="right"><strong><?php echo $this->grandTotal; ?></strong></td>  
+    </tr>  
+    <tr>
+      <td style="border-bottom: 0.5px solid #000;">&nbsp;</td>
+      <td style="border-bottom: 0.5px solid #000;">&nbsp;</td>
+      <td style="border-bottom: 0.5px solid #000;">&nbsp;</td>
+      <td style="border-bottom: 0.5px solid #000;">&nbsp;</td>
+      <td style="border-bottom: 0.5px solid #000;">&nbsp;</td>
+    </tr> 
+  </table>
+  <br><br><br>
+  <table width="100%" cellspacing="0" cellpadding="0">  
+    <tr>        
+      <td width="80%"><?php echo $this->notes; ?></td>          
+      <td width="20%" style="color:#a3a3a3;" align="right"><?php 
+      echo $GLOBALS['TL_LANG']['isoInvoice']['shippingAddress'] . "<br>"; 
+      echo $this->arrShippingAddress['company'] ? $this->arrShippingAddress['company'] . "<br>" : "";  
+      echo $this->arrShippingAddress['firstname'] . " ";
+      echo $this->arrShippingAddress['lastname'] . "<br>";
+      echo $this->arrShippingAddress['street_1'] ? $this->arrShippingAddress['street_1'] . "<br>" : "";
+      echo $this->arrShippingAddress['street_2'] ? $this->arrShippingAddress['street_2'] . "<br>" : "";
+      echo $this->arrShippingAddress['street_3'] ? $this->arrShippingAddress['street_3'] . "<br>" : "";
+      echo $this->arrShippingAddress['postal'] . " ";
+      echo $this->arrShippingAddress['city'] . "<br>";
+      echo $GLOBALS['TL_LANG']['CNT'][$this->arrShippingAddress['country']];     
+      ?></td>
+    </tr> 
+  </table>
+</div>
+<div style="background-color:#dcdcdc; width: 100%; padding: 20px 80px; font-size: 72.5%; font-family: Helvetica, sans-serif;"><table 
+   width="100%" cellspacing="0" cellpadding="0">  
+    <tr><td colspan="4"></td></tr>
+    <tr>	
+      <td width="10%"></td>				
+      <td width="40%"><?php 
+        echo $this->config['company'] ? "<strong>" . $this->config['company'] . "</strong><br>" : ""; 
+        echo $this->config['firstname'] . " " . $this->config['lastname']. "<br>";
+        echo $this->config['street_1'] ? $this->config['street_1'] . "<br>" : ""; 
+        echo $this->config['street_2'] ? $this->config['street_2'] . "<br>" : ""; 
+        echo $this->config['street_3'] ? $this->config['street_3'] . "<br>" : ""; 
+        echo $this->config['postal'] . " " . $this->config['city'] . "<br>";
+        echo $GLOBALS['TL_LANG']['CNT'][$this->config['country']] . "<br><br>";
+        echo $GLOBALS['TL_LANG']['tl_iso_config']['phone'][0] . ": " . $this->config['phone'] . "<br>";
+        echo $this->config['email'] . "<br>";
+        echo $_SERVER["SERVER_NAME"];
+      ?></td>					
+      <td width="10%"></td>	
+      <td width="40%"><?php
+        if(strlen($this->config['bank_name']) > 0): 
+          echo "<br>";
+          echo $GLOBALS['TL_LANG']['tl_iso_config']['bank_name'][0] . "<br>";
+          echo $this->config['bank_name'] . "<br>";
+          echo $GLOBALS['TL_LANG']['tl_iso_config']['bank_id'][0] . ": " . $this->config['bank_id'] . "<br>";
+          echo $GLOBALS['TL_LANG']['tl_iso_config']['account_number'][0] . ": " . $this->config['account_number'] . "<br>";
+          echo $GLOBALS['TL_LANG']['tl_iso_config']['iban'][0] . ": " . $this->config['iban'] . "<br>";
+          echo $GLOBALS['TL_LANG']['tl_iso_config']['bic'][0] . ": " . $this->config['bic']; 
+        endif; 
+      ?></td>
+    </tr> 
+  </table>	
+</div>
