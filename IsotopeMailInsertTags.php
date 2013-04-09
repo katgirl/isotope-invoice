@@ -58,6 +58,8 @@ class IsotopeMailInsertTags extends IsotopeOrder
     $arrData['config_tax_number']         = strip_tags($this->Isotope->Config->tax_number);
     $arrData['config_register']           = strip_tags($this->Isotope->Config->register);
     $arrData['config_managing_directors'] = strip_tags($this->Isotope->Config->managing_directors);
+    $arrData['date_paid']                 = $this->parseDate($GLOBALS['TL_CONFIG']['dateFormat'], $objOrder->date_paid);
+    $arrData['date_shipped']              = $this->parseDate($GLOBALS['TL_CONFIG']['dateFormat'], $objOrder->date_shipped);
     
     return $arrData;
   }
