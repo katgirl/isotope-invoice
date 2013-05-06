@@ -49,21 +49,25 @@ class ExtIsotopeInvoice extends Model
    * New parameter for TemplateObject
    */
   public function getGenerateCollection(&$objTemplate, $arrItems, IsotopeProductCollection $objProductCollection) 
-  {   
-    $objTemplate->invoiceTitle      = $GLOBALS['TL_LANG']['isoInvoice']['iso_invoice_title']; 
-    $objTemplate->orderIdLabel      = $GLOBALS['TL_LANG']['isoInvoice']['orderIdLabel'];
-    $objTemplate->orderId           = $objProductCollection->order_id;
-    $objTemplate->orderDateLabel    = $GLOBALS['TL_LANG']['isoInvoice']['orderDateLabel'];
-    $objTemplate->orderDate         = date($GLOBALS['TL_CONFIG']['dateFormat'], $objProductCollection->date);
-    $objTemplate->arrBillingAddress = $objProductCollection->billing_address;
+  { 
     
-    if ( !$objProductCollection->shipping_address ) 
-       $objTemplate->arrShippingAddress = $objProductCollection->shipping_address;    
-    else
-      $objTemplate->arrShippingAddress = $objProductCollection->billing_address;
-    
-    // Switch Template
-    $objTemplate->setName($this->Isotope->Config->invoice_template);    
+    if ( preg_match("/iso_invoice/", $objTemplate->getName() ) )
+    {  
+      $objTemplate->invoiceTitle      = $GLOBALS['TL_LANG']['isoInvoice']['iso_invoice_title']; 
+      $objTemplate->orderIdLabel      = $GLOBALS['TL_LANG']['isoInvoice']['orderIdLabel'];
+      $objTemplate->orderId           = $objProductCollection->order_id;
+      $objTemplate->orderDateLabel    = $GLOBALS['TL_LANG']['isoInvoice']['orderDateLabel'];
+      $objTemplate->orderDate         = date($GLOBALS['TL_CONFIG']['dateFormat'], $objProductCollection->date);
+      $objTemplate->arrBillingAddress = $objProductCollection->billing_address;
+      
+      if ( !$objProductCollection->shipping_address ) 
+         $objTemplate->arrShippingAddress = $objProductCollection->shipping_address;    
+      else
+        $objTemplate->arrShippingAddress = $objProductCollection->billing_address;
+      
+      // Switch Template
+      $objTemplate->setName($this->Isotope->Config->invoice_template);    
+    } 
   } 
 }
 
