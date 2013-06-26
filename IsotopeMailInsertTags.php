@@ -51,7 +51,7 @@ class IsotopeMailInsertTags extends IsotopeOrder
     $arrData['note']                      = $objOrder->notes;
     $arrData['note_text']                 = strip_tags($objOrder->notes);
     $arrData['config_bank_name']          = strip_tags($this->Isotope->Config->bank_name);
-    $arrData['config_bank_id']            = strip_tagss($this->Isotope->Config->bank_id);
+    $arrData['config_bank_id']            = strip_tags($this->Isotope->Config->bank_id);
     $arrData['config_account_number']     = strip_tags($this->Isotope->Config->account_number);
     $arrData['config_iban']               = strip_tags($this->Isotope->Config->iban);
     $arrData['config_bic']                = strip_tags($this->Isotope->Config->bic);
