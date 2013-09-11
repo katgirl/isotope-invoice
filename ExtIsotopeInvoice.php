@@ -36,7 +36,7 @@ class ExtIsotopeInvoice extends Model
     
     if ( ! preg_match("/iso_invoice/", $objTemplate->getName() ) )
     { 
-      continue;
+      return;
     }  
     
     $objTemplate->invoiceTitle       = $GLOBALS['TL_LANG']['isoInvoice']['iso_invoice_title']; 
